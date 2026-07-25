@@ -86,23 +86,43 @@ async function init() {
     applyFilters();
     document.getElementById('loading-overlay').classList.add('hidden');
 
-    // Mobile menu with overlay
+    // Sidebar drawer toggle
     const btn = document.getElementById('mobile-menu-btn');
     const sidebar = document.getElementById('sidebar');
 
-    // Create overlay element for sidebar backdrop
+    // Create overlay backdrop
     const overlay = document.createElement('div');
     overlay.className = 'sidebar-overlay';
     overlay.id = 'sidebar-overlay';
     document.body.appendChild(overlay);
 
-    function toggleSidebar() {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('active', sidebar.classList.contains('open'));
+    // Create close button inside sidebar
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'sidebar-close-btn';
+    closeBtn.innerHTML = '✕';
+    closeBtn.setAttribute('aria-label', 'Close sidebar');
+    sidebar.insertBefore(closeBtn, sidebar.firstChild);
+
+    function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
     }
 
-    btn.addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', toggleSidebar);
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+    }
+
+    btn.addEventListener('click', openSidebar);
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
 }
 
 // ---- SIDEBAR SETUP ----
