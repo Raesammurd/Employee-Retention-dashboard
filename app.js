@@ -86,11 +86,23 @@ async function init() {
     applyFilters();
     document.getElementById('loading-overlay').classList.add('hidden');
 
-    // Mobile menu
+    // Mobile menu with overlay
     const btn = document.getElementById('mobile-menu-btn');
-    btn.addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('open');
-    });
+    const sidebar = document.getElementById('sidebar');
+
+    // Create overlay element for sidebar backdrop
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    overlay.id = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active', sidebar.classList.contains('open'));
+    }
+
+    btn.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
 }
 
 // ---- SIDEBAR SETUP ----
