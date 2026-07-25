@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explainable BI Dashboard | Causal Retention Optimizer</title>
+    <meta name="description" content="Prescriptive Workforce Retention Dashboard — Causal Uplift Optimization, Behavioral Segmentation & Algorithmic Governance Engine. MSc Research Project.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR                                                      -->
+    <!-- ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-icon">🎯</span>
+            <div>
+                <h2 class="brand-title">Policy Controls</h2>
+                <span class="brand-sub">Causal Retention Engine</span>
+            </div>
+        </div>
+        <div class="sidebar-divider"></div>
+
+        <!-- Department Filter -->
+        <div class="sidebar-section">
+            <h3 class="section-title"><span class="section-icon">📊</span> Department Filter</h3>
+            <div id="dept-filters" class="checkbox-group"></div>
+        </div>
+
+        <!-- Financial Parameters -->
+        <div class="sidebar-section">
+            <h3 class="section-title"><span class="section-icon">💰</span> Financial ROI Parameters</h3>
+            <div class="slider-group">
+                <label class="slider-label">
+                    Replacement Cost Multiplier (× Salary)
+                    <span class="slider-value" id="rc-value">1.5×</span>
+                </label>
+                <input type="range" class="slider" id="replacement-cost"
+                       min="1.0" max="2.5" step="0.1" value="1.5">
+            </div>
+            <div class="slider-group">
+                <label class="slider-label">
+                    Unit Intervention Cost ($ USD)
+                    <span class="slider-value" id="ic-value">$2,500</span>
+                </label>
+                <input type="range" class="slider" id="intervention-cost"
+                       min="500" max="10000" step="500" value="2500">
+            </div>
+        </div>
+
+        <!-- CATE Decision Threshold -->
+        <div class="sidebar-section">
+            <h3 class="section-title"><span class="section-icon">🎯</span> Decision Threshold</h3>
+            <div class="slider-group">
+                <label class="slider-label">
+                    Min Required CATE (τ<sub>min</sub>)
+                    <span class="slider-value" id="cate-value">−0.07</span>
+                </label>
+                <input type="range" class="slider" id="cate-threshold"
+                       min="-0.40" max="0.00" step="0.01" value="-0.07">
+                <p class="slider-help">Target employees with CATE reduction greater than this threshold.</p>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <p>MSc Research Project</p>
+            <p>Applied Artificial Intelligence</p>
+        </div>
+    </aside>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT                                                 -->
+    <!-- ============================================================ -->
+    <main class="main-content">
+
+        <!-- HEADER -->
+        <header class="dashboard-header">
+            <div class="header-text">
+                <h1 id="main-title">Explainable BI Dashboard: Prescriptive Workforce Retention</h1>
+                <p class="subtitle">Causal Uplift Optimization, Behavioral Segmentation &amp; Algorithmic Governance Engine</p>
+            </div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle sidebar">☰</button>
+        </header>
+
+        <!-- KPI ROW -->
+        <div class="kpi-row" id="kpi-row">
+            <div class="kpi-card" id="kpi-workforce">
+                <div class="kpi-label">Total Workforce</div>
+                <div class="kpi-value" id="kpi-workforce-val">—</div>
+            </div>
+            <div class="kpi-card" id="kpi-targeted">
+                <div class="kpi-label">Targeted Cohort</div>
+                <div class="kpi-value" id="kpi-targeted-val">—</div>
+                <div class="kpi-delta" id="kpi-targeted-delta"></div>
+            </div>
+            <div class="kpi-card" id="kpi-spend">
+                <div class="kpi-label">Total Campaign Spend</div>
+                <div class="kpi-value" id="kpi-spend-val">—</div>
+            </div>
+            <div class="kpi-card" id="kpi-savings">
+                <div class="kpi-label">Expected Net Savings</div>
+                <div class="kpi-value" id="kpi-savings-val">—</div>
+                <div class="kpi-delta" id="kpi-savings-delta"></div>
+            </div>
+            <div class="kpi-card" id="kpi-retained">
+                <div class="kpi-label">Est. Retained Staff</div>
+                <div class="kpi-value" id="kpi-retained-val">—</div>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <nav class="tab-nav" id="tab-nav">
+            <button class="tab-btn active" data-tab="segmentation">
+                <span class="tab-icon">🎯</span>
+                <span class="tab-text">Behavioral Segmentation (2×2 CATE Matrix)</span>
+            </button>
+            <button class="tab-btn" data-tab="roi">
+                <span class="tab-icon">💰</span>
+                <span class="tab-text">Financial ROI &amp; Resource Allocation</span>
+            </button>
+            <button class="tab-btn" data-tab="shap">
+                <span class="tab-icon">🔍</span>
+                <span class="tab-text">Glass-Box SHAP Explainability</span>
+            </button>
+            <button class="tab-btn" data-tab="governance">
+                <span class="tab-icon">⚖️</span>
+                <span class="tab-text">Algorithmic Governance &amp; EEOC Audit</span>
+            </button>
+        </nav>
+
+        <!-- TAB PANELS -->
+        <div class="tab-content">
+
+            <!-- TAB 1: SEGMENTATION -->
+            <section id="tab-segmentation" class="tab-panel active">
+                <div class="panel-header">
+                    <h2>Prescriptive Workforce Archetype Matrix</h2>
+                    <p class="panel-caption">Bivariate mapping of Baseline Attrition Risk P(Y<sub>0</sub>=1|X) vs. CATE Uplift τ̂(X) to isolate Persuadables.</p>
+                </div>
+                <div class="panel-grid two-col-wide">
+                    <div class="chart-card">
+                        <div id="scatter-chart" class="chart-container"></div>
+                    </div>
+                    <div class="chart-card side-panel">
+                        <h3 class="card-title">Segment Distribution</h3>
+                        <div id="pie-chart" class="chart-container-sm"></div>
+                        <div class="info-box">
+                            <div class="info-icon">ℹ️</div>
+                            <div>
+                                <strong>Policy Rule:</strong> Target strictly <span class="seg-persuadable">Persuadables</span>
+                                (High Risk + Negative CATE). Exclude <span class="seg-sleeping">Sleeping Dogs</span>
+                                to prevent turnover activation.
+                            </div>
+                        </div>
+                        <div id="segment-table-container" class="segment-table-wrap"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: FINANCIAL ROI -->
+            <section id="tab-roi" class="tab-panel">
+                <div class="panel-header">
+                    <h2>Resource Allocation &amp; Decision Cutoff Sensitivity</h2>
+                    <p class="panel-caption">Simulating financial returns across varying CATE decision thresholds.</p>
+                </div>
+                <div class="panel-grid two-col">
+                    <div class="chart-card">
+                        <div id="net-savings-chart" class="chart-container"></div>
+                    </div>
+                    <div class="chart-card">
+                        <div id="roi-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: SHAP -->
+            <section id="tab-shap" class="tab-panel">
+                <div class="panel-header">
+                    <h2>Individual Employee CATE Explanation (SHAP Drill-Down)</h2>
+                    <p class="panel-caption">Audit individual employee predictions to provide actionable, domain-aligned decision support.</p>
+                </div>
+                <div class="shap-controls">
+                    <label class="select-label" for="emp-select">Select Employee ID to Audit:</label>
+                    <select id="emp-select" class="emp-select"></select>
+                </div>
+                <div class="kpi-row emp-kpis" id="emp-kpis">
+                    <div class="kpi-card mini"><div class="kpi-label">Employee</div><div class="kpi-value" id="emp-id">—</div></div>
+                    <div class="kpi-card mini"><div class="kpi-label">Baseline Risk P(Y₀=1|X)</div><div class="kpi-value" id="emp-risk">—</div></div>
+                    <div class="kpi-card mini"><div class="kpi-label">Estimated CATE Uplift</div><div class="kpi-value" id="emp-cate">—</div></div>
+                    <div class="kpi-card mini"><div class="kpi-label">Archetype Segment</div><div class="kpi-value" id="emp-segment">—</div></div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="card-title">Local SHAP Feature Contributions</h3>
+                    <div id="shap-bar-chart" class="chart-container"></div>
+                </div>
+            </section>
+
+            <!-- TAB 4: GOVERNANCE -->
+            <section id="tab-governance" class="tab-panel">
+                <div class="panel-header">
+                    <h2>Algorithmic Fairness &amp; Disparate Impact Audit</h2>
+                    <p class="panel-caption">Auditing intervention selection rate parity against the EEOC 80% (Four-Fifths) Legal Rule.</p>
+                </div>
+                <div class="shap-controls">
+                    <label class="select-label" for="audit-attr-select">Select Protected Attribute for Audit:</label>
+                    <select id="audit-attr-select" class="emp-select">
+                        <option value="Gender">Gender</option>
+                        <option value="Department">Department</option>
+                        <option value="MaritalStatus">Marital Status</option>
+                        <option value="AgeGroup">Age Group</option>
+                    </select>
+                </div>
+                <div class="panel-grid two-col">
+                    <div class="chart-card">
+                        <div id="selection-rate-chart" class="chart-container"></div>
+                    </div>
+                    <div class="chart-card">
+                        <div id="dir-chart" class="chart-container"></div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div id="fairness-table-container"></div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="dashboard-footer">
+            <p>Developed for MSc Research Project &nbsp;|&nbsp; Department of Applied Artificial Intelligence &nbsp;|&nbsp; Dr. Irum Feroz (Supervisor)</p>
+        </footer>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Loading Dashboard Data…</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py
+*.pyc
+
+# Word documents (not needed for deployment)
+*.docx
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Agents
+.agents/
